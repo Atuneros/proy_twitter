@@ -10,36 +10,23 @@ f = open("archivo.txt","w")
 f.write("")
 f.close()
 
-import re
-import unicodedata
-from operator import add
-import sys
-from googletrans import Translator
 import mysql.connector
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 
-conn = mysql.connector.connect(
-   user='admin', password='12345', host='127.0.0.1', database='tweets')
-
-#Creating a cursor object using the cursor() method
-cursor = conn.cursor()
-sql = "INSERT INTO tweets (texto) VALUES (%s)"
 # Create a local StreamingContext with two working thread and batch interval of 1 second
 #sc = SparkContext("local[2]", "NetworkWordCount")
 sc.setLogLevel("ERROR")
 ssc = StreamingContext(sc, 5)
-
-translator = Translator()
 
 def bbdd(si):
     f = open("archivo.txt","a+")
     for x in si:
         f.write(x+"\n")
     f.close()
-    
+
 
 def vader(sentence):
     analyser = SentimentIntensityAnalyzer()
@@ -60,4 +47,3 @@ lines.pprint()
 
 ssc.start()             # Start the computation
 ssc.awaitTermination()  # Wait for the computation to terminate
-conn.commit()
